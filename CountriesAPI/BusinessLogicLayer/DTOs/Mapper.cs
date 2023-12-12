@@ -14,16 +14,16 @@ public static class Mapper
             FlagUrl = country.FlagUrl,
             Name = language switch
             {
-                Language.Uz => country.NameUz,
-                Language.Ru => country.NameRu,
-                Language.En => country.NameEn,
+                Language.uz => country.NameUz,
+                Language.ru => country.NameRu,
+                Language.en => country.NameEn,
                 _ => country.NameUz,
             },
             Capital = language switch
             {
-                Language.Uz => country.CapitalUz,
-                Language.Ru => country.CapitalRu,
-                Language.En => country.CapitalEn,
+                Language.uz => country.CapitalUz,
+                Language.ru => country.CapitalRu,
+                Language.en => country.CapitalEn,
                 _ => country.CapitalUz,
             }
         };

@@ -8,10 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CountriesAPI.BusinessLogicLayer.Service;
 
-public class CountryService(AppDbContext dbContext)
-    : ICountryInterface
+public class CountryService : ICountryInterface
 {
-    private readonly AppDbContext _dbContext = dbContext;
+    private readonly AppDbContext _dbContext;
+    public CountryService(AppDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     public async Task Add(AddCountryDto dto)
     {
