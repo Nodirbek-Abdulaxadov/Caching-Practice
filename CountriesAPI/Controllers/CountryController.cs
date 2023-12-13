@@ -2,6 +2,7 @@
 using CountriesAPI.BusinessLogicLayer.DTOs.CountryDtos;
 using CountriesAPI.BusinessLogicLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace CountriesAPI.Controllers;
 [Route("api/[controller]")]
@@ -14,20 +15,54 @@ public class CountryController : ControllerBase
         _countryInterface = countryInterface;
     }
 
-    [HttpGet("/{lang}")]
+    [HttpGet("{lang}")]
+    //[ResponseCache(Duration = 30)] - client (frontchi) tomonidan cache qilinadi
+    [OutputCache(Duration = 30)] //server tomonidan cache qilinadi
     public async Task<IActionResult> Get(string lang)
     {
-        var language = (Language)Enum.Parse(typeof(Language), lang);
+        Language language = Language.uz;
+
+        try
+        {
+            language = (Language)Enum.Parse(typeof(Language), lang.ToLower());
+        }
+        catch (Exception)
+        {
+            return BadRequest("Language is not supported!");
+        }
+
         var list = await _countryInterface.GetAll(language);
         return Ok(list);
     }
 
-    [HttpGet("/{id}/{lang}")]
+    [HttpGet("{id}/{lang}")]
     public async Task<IActionResult> Get(int id, string lang)
     {
-        var language = (Language)Enum.Parse(typeof(Language), lang);
-        var country = await _countryInterface.GetById(id, language);
-        return Ok(country);
+        Language language = Language.uz;
+
+        try
+        {
+            language = (Language)Enum.Parse(typeof(Language), lang.ToLower());
+        }
+        catch (Exception)
+        {
+            return BadRequest("Language is not supported!");
+        }
+        
+        try
+        {
+            var country = await _countryInterface.GetById(id, language);
+            return Ok(country);
+        }
+        catch(ArgumentNullException)
+        {
+            return NotFound();
+        }
+        catch(Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+
+        }
     }
 
     [HttpPost]
